@@ -1,20 +1,19 @@
-require('dotenv').config(); // 📌 Charge les variables d'environnement
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 📌 Middleware
+// 📌 Activer CORS et JSON parsing
 app.use(cors());
 app.use(express.json());
 
-// 📌 Servir les fichiers statiques (chatbot.html, CSS, JS...)
+// 📌 ✅ Servir les fichiers statiques (HTML, CSS, JS) depuis "public/"
 app.use(express.static(path.join(__dirname, "public")));
 
-// 📌 Route pour afficher `chatbot.html`
+// 📌 ✅ Route pour afficher chatbot.html
 app.get("/chatbot.html", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "chatbot.html"));
 });
@@ -26,10 +25,10 @@ app.get("/", (req, res) => {
 
 // 📌 Route pour interagir avec OpenAI
 app.post('/api/chat', async (req, res) => {
-    console.log("📩 Requête reçue :", req.body); // 🔍 Log de la requête reçue
+    console.log("📩 Requête reçue :", req.body);
 
     const userMessage = req.body.message;
-    const apiKey = process.env.OPENAI_API_KEY; // 🔑 Récupération de la clé API
+    const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
         console.error("❌ Clé API manquante !");
@@ -50,7 +49,7 @@ app.post('/api/chat', async (req, res) => {
         });
 
         const data = await response.json();
-        console.log("🔹 Réponse API OpenAI :", JSON.stringify(data, null, 2)); // 🔍 Voir la réponse brute
+        console.log("🔹 Réponse API OpenAI :", JSON.stringify(data, null, 2));
 
         if (data.choices && data.choices.length > 0 && data.choices[0].message) {
             res.json({ response: data.choices[0].message.content });
@@ -64,7 +63,7 @@ app.post('/api/chat', async (req, res) => {
     }
 });
 
-// 📌 Lancer le serveur sur le port défini
+// 📌 ✅ Lancer le serveur
 app.listen(PORT, () => {
     console.log(`🚀 Serveur backend lancé sur http://localhost:${PORT}`);
 });
