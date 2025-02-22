@@ -25,13 +25,13 @@ app.get("/", (req, res) => {
 
 // 📌 Route pour interagir avec OpenAI
 app.post('/api/chat', async (req, res) => {
-    console.log("📩 Requête reçue :", req.body); // Log de la requête utilisateur
+    console.error("📩 Requête reçue :", req.body);
 
     const userMessage = req.body.message;
     const apiKey = process.env.OPENAI_API_KEY;
 
-    // 📌 🔍 Vérification : la clé API est-elle bien chargée ?
-    console.log("🔑 Clé API utilisée :", apiKey ? "OK (masquée)" : "❌ Clé absente !");
+    // 📌 🔍 Vérification : afficher la clé API dans les logs
+    console.error("🔑 Clé API utilisée :", apiKey ? "OK (masquée)" : "❌ Clé absente !");
 
     if (!apiKey) {
         console.error("❌ Clé API manquante !");
@@ -52,7 +52,7 @@ app.post('/api/chat', async (req, res) => {
         });
 
         const data = await response.json();
-        console.log("🔹 Réponse API OpenAI :", JSON.stringify(data, null, 2));
+        console.error("🔹 Réponse API OpenAI :", JSON.stringify(data, null, 2));
 
         if (data.choices && data.choices.length > 0 && data.choices[0].message) {
             res.json({ response: data.choices[0].message.content });
@@ -65,6 +65,7 @@ app.post('/api/chat', async (req, res) => {
         res.status(500).json({ error: "Erreur lors de l'appel à OpenAI." });
     }
 });
+
 
 
 // 📌 ✅ Lancer le serveur
