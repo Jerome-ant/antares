@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot RH Belge</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #chatbox { width: 80%; max-width: 600px; margin: auto; padding: 10px; border: 1px solid #ddd; height: 400px; overflow-y: auto; }
+        #userInput { width: 70%; padding: 10px; }
+        #sendBtn { padding: 10px; cursor: pointer; }
+    </style>
+    <script>
+        async function sendMessage() {
+            let userMessage = document.getElementById("userInput").value;
+            document.getElementById("userInput").value = "";
+            document.getElementById("chatbox").innerHTML += `<p><b>Vous :</b> ${userMessage}</p>`;
+            
+            let response = await fetch("https://api.openai.com/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer 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"
+                },
+                body: JSON.stringify({
+                    model: "gpt-4-turbo",
+                    messages: [
+                        { role: "system", content: "Tu es un expert RH belge en droit du travail et recrutement industriel. Réponds avec des détails précis et références juridiques belges." },
+                        { role: "user", content: userMessage }
+                    ]
+                })
+            });
+            
+            let result = await response.json();
+            document.getElementById("chatbox").innerHTML += `<p><b>IA :</b> ${result.choices[0].message.content}</p>`;
+        }
+    </script>
+</head>
+<body>
+    <h2>Chatbot RH Belge</h2>
+    <div id="chatbox"></div>
+    <input type="text" id="userInput" placeholder="Posez votre question RH">
+    <button id="sendBtn" onclick="sendMessage()">Envoyer</button>
+</body>
+</html>
