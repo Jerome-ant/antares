@@ -1,37 +1,27 @@
-require('dotenv').config();
+require('dotenv').config(); // Charge les variables d'environnement
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 const app = express();
-const PORT = process.env.PORT || 3000; // ✅ Render définit automatiquement le port
-
 app.use(cors());
-app.use(express.json()); // ✅ Lire les requêtes JSON
+app.use(express.json()); // 📌 Permet de lire le JSON dans les requêtes
 
-// 📌 Test du serveur
-app.get("/", (req, res) => {
-    res.send("🚀 Serveur backend opérationnel !");
+// 📌 Route de test pour voir si le serveur fonctionne
+app.get('/', (req, res) => {
+    res.send('🚀 Serveur backend opérationnel');
 });
 
-// 📌 Vérifier si les routes sont bien chargées
-app._router.stack.forEach(function(r){
-    if (r.route && r.route.path) {
-        console.log("🛠 Route disponible : " + r.route.path);
-    }
-});
-
-// 📌 Route pour le chatbot OpenAI
+// 📌 Route pour interagir avec OpenAI
 app.post('/api/chat', async (req, res) => {
-    console.log("📩 Requête reçue :", req.body);
+    console.log("📩 Requête reçue :", req.body); // 🔍 Log de la requête reçue
 
     const userMessage = req.body.message;
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY; // 🔑 Récupération de la clé API
 
     if (!apiKey) {
         console.error("❌ Clé API manquante !");
-        return res.status(500).json({ error: "Clé API manquante sur Render." });
+        return res.status(500).json({ error: "Clé API manquante dans .env" });
     }
 
     try {
@@ -48,17 +38,17 @@ app.post('/api/chat', async (req, res) => {
         });
 
         const data = await response.json();
-        console.log("🔹 Réponse API OpenAI :", JSON.stringify(data, null, 2));
+        console.log("🔹 Réponse API OpenAI :", JSON.stringify(data, null, 2)); // 🔍 Voir la réponse brute
 
         if (data.choices && data.choices.length > 0 && data.choices[0].message) {
             res.json({ response: data.choices[0].message.content });
         } else {
-            console.error("❌ Aucune réponse valide reçue d'OpenAI !");
-            res.status(500).json({ error: "Erreur OpenAI : aucune réponse." });
+            console.error("❌ Aucune réponse valide de OpenAI !");
+            res.status(500).json({ error: "Erreur : aucune réponse reçue de l'IA." });
         }
     } catch (error) {
-        console.error("❌ Erreur lors de l'appel OpenAI :", error);
-        res.status(500).json({ error: "Erreur de connexion à OpenAI." });
+        console.error("❌ Erreur API OpenAI :", error);
+        res.status(500).json({ error: "Erreur lors de l'appel à OpenAI." });
     }
 });
 
