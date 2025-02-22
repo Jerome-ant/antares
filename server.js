@@ -1,15 +1,27 @@
-require('dotenv').config(); // Charge les variables d'environnement
+require('dotenv').config(); // 📌 Charge les variables d'environnement
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 const app = express();
-app.use(cors());
-app.use(express.json()); // 📌 Permet de lire le JSON dans les requêtes
+const PORT = process.env.PORT || 3000;
 
-// 📌 Route de test pour voir si le serveur fonctionne
-app.get('/', (req, res) => {
-    res.send('🚀 Serveur backend opérationnel');
+// 📌 Middleware
+app.use(cors());
+app.use(express.json());
+
+// 📌 Servir les fichiers statiques (chatbot.html, CSS, JS...)
+app.use(express.static(path.join(__dirname, "public")));
+
+// 📌 Route pour afficher `chatbot.html`
+app.get("/chatbot.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "chatbot.html"));
+});
+
+// 📌 Route de test pour vérifier si le serveur fonctionne
+app.get("/", (req, res) => {
+    res.send("🚀 Serveur backend opérationnel et prêt !");
 });
 
 // 📌 Route pour interagir avec OpenAI
@@ -52,7 +64,7 @@ app.post('/api/chat', async (req, res) => {
     }
 });
 
-// 📌 Lancement du serveur sur le port 3000
-app.listen(3000, () => {
-    console.log("🚀 Serveur backend lancé sur http://localhost:3000");
+// 📌 Lancer le serveur sur le port défini
+app.listen(PORT, () => {
+    console.log(`🚀 Serveur backend lancé sur http://localhost:${PORT}`);
 });
