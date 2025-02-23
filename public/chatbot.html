@@ -62,7 +62,7 @@
     </div>
 
     <script>
-        const BACKEND_URL = "https://antares.work/api/chat";
+        const BACKEND_URL = "https://www.antares.work";
 
         async function sendMessage() {
             const inputField = document.getElementById("user-input");
@@ -84,7 +84,7 @@
 
             try {
                 // Envoyer la requête au backend
-                const response = await fetch(`${BACKEND_URL}/chat`, {
+                const response = await fetch(`${BACKEND_URL}/api/chat`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
