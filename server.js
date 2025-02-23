@@ -1,15 +1,15 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const path = require("path"); // ✅ Ajouté pour servir les fichiers statiques
+const path = require("path"); // ✅ Garder UNE SEULE FOIS cette ligne
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 app.use(cors());
-const path = require("path"); // ✅ Ajoute path pour servir les fichiers statiques
-app.use(express.static(path.join(__dirname, 'public'))); // ✅ Sert les fichiers statiques
-app.use(express.json()); // 📌 Permet de lire le JSON dans les requêtes
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public'))); // ✅ Sert `chatbot.html`
 
 // 📌 Route de test pour voir si le serveur fonctionne
 app.get('/', (req, res) => {
