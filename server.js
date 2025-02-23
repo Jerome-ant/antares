@@ -1,10 +1,14 @@
-require('dotenv').config(); // Charge les variables d'environnement
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require("path"); // ✅ Ajouté pour servir les fichiers statiques
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 app.use(cors());
+const path = require("path"); // ✅ Ajoute path pour servir les fichiers statiques
+app.use(express.static(path.join(__dirname, 'public'))); // ✅ Sert les fichiers statiques
 app.use(express.json()); // 📌 Permet de lire le JSON dans les requêtes
 
 // 📌 Route de test pour voir si le serveur fonctionne
