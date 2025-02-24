@@ -36,7 +36,7 @@ app.post('/api/chat', async (req, res) => {
                 "Authorization": `Bearer ${apiKey}`
             },
             body: JSON.stringify({
-                model: "gpt-4-turbo",
+                model: "gpt-4o-2024-08-06",
                 messages: [{ role: "user", content: userMessage }]
             })
         });
