@@ -1,51 +1,44 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const path = require("path"); // ✅ Garder UNE SEULE FOIS cette ligne
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+import "dotenv/config"; // Charge les variables d'environnement
+import express from "express";
+import cors from "cors";
+import path from "path";
+import OpenAI from "openai";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY }); // ✅ API OpenAI avec SDK
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public'))); // ✅ Sert `chatbot.html`
+app.use(express.static(path.join(process.cwd(), "public"))); // ✅ Sert `chatbot.html`
 
 // 📌 Route de test pour voir si le serveur fonctionne
-app.get('/', (req, res) => {
-    res.send('🚀 Serveur backend opérationnel');
+app.get("/", (req, res) => {
+    res.send("🚀 Serveur backend opérationnel");
 });
 
 // 📌 Route pour interagir avec OpenAI
-app.post('/api/chat', async (req, res) => {
+app.post("/api/chat", async (req, res) => {
     console.log("📩 Requête reçue :", req.body); // 🔍 Log de la requête reçue
 
     const userMessage = req.body.message;
-    const apiKey = process.env.OPENAI_API_KEY; // 🔑 Récupération de la clé API
 
-    if (!apiKey) {
+    if (!process.env.OPENAI_API_KEY) {
         console.error("❌ Clé API manquante !");
         return res.status(500).json({ error: "Clé API manquante dans .env" });
     }
 
     try {
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${apiKey}`
-            },
-            body: JSON.stringify({
-                model: "gpt-4o-2024-08-06",
-                messages: [{ role: "user", content: userMessage }]
-            })
+        const response = await openai.chat.completions.create({
+            model: "gpt-4o-2024-08-06", // ✅ Modèle OpenAI
+            messages: [{ role: "user", content: userMessage }],
+            store: true, // ✅ Enregistre la conversation (optionnel)
         });
 
-        const data = await response.json();
-        console.log("🔹 Réponse API OpenAI :", JSON.stringify(data, null, 2)); // 🔍 Voir la réponse brute
+        console.log("🔹 Réponse API OpenAI :", JSON.stringify(response, null, 2));
 
-        if (data.choices && data.choices.length > 0 && data.choices[0].message) {
-            res.json({ response: data.choices[0].message.content });
+        if (response.choices?.length > 0) {
+            res.json({ response: response.choices[0].message.content });
         } else {
             console.error("❌ Aucune réponse valide de OpenAI !");
             res.status(500).json({ error: "Erreur : aucune réponse reçue de l'IA." });
@@ -57,6 +50,6 @@ app.post('/api/chat', async (req, res) => {
 });
 
 // 📌 Lancer le serveur sur le bon port
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Serveur backend lancé sur http://0.0.0.0:${PORT}`);
 });
