@@ -31,7 +31,7 @@ app.post("/api/chat", async (req, res) => {
     try {
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-latest", // ✅ Modèle OpenAI
-            { role: "system", content: "Tu es un expert en Ressources Humaines en Belgique. Utilise un ton formel et donne des conseils RH précis et factuels." },
+            { role: "system", content: "Tu es un expert en Ressources Humaines en Belgique. Utilise un ton formel et donne des conseils RH précis et factuels." }
             { role: "user", content: userMessage }
             store: true, // ✅ Enregistre la conversation (optionnel)
 
@@ -51,7 +51,6 @@ app.post("/api/chat", async (req, res) => {
     }
 });
 
-// 📌 Lancer le serveur sur le bon port
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Serveur backend lancé sur http://0.0.0.0:${PORT}`);
 });
