@@ -31,11 +31,9 @@ app.post("/api/chat", async (req, res) => {
     try {
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-latest", // ✅ Modèle OpenAI
-            messages: [{ role: "user", 
-            content: "Utilise un ton formel. Spécialiste RH, tu conseilles sur les matières RH et le droit du travail en Belgique" }],
+            { role: "system", content: "Tu es un expert en Ressources Humaines en Belgique. Utilise un ton formel et donne des conseils RH précis et factuels." },
+            { role: "user", content: userMessage }
             store: true, // ✅ Enregistre la conversation (optionnel)
-            temperature: 0.6,
-            max_tokens: 256,
 
         });
 
