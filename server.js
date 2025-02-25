@@ -29,10 +29,14 @@ app.post("/api/chat", async (req, res) => {
     }
 
     try {
-        const response = await openai.chat.completions.create({
-            model: "gpt-4o-2024-08-06", // ✅ Modèle OpenAI
-            messages: [{ role: "user", content: userMessage }],
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4o-latest", // ✅ Modèle OpenAI
+            messages: [{ role: "user", 
+            content: "Utilise un ton formel. Spécialiste RH, tu conseilles sur les matières RH et le droit du travail en Belgique" }],
             store: true, // ✅ Enregistre la conversation (optionnel)
+            temperature: 0.6,
+            max_tokens: 256,
+
         });
 
         console.log("🔹 Réponse API OpenAI :", JSON.stringify(response, null, 2));
