@@ -30,17 +30,17 @@ app.post("/api/chat", async (req, res) => {
 
     try {
         const completion = await openai.chat.completions.create({
-            model: "gpt-4o-realtime-preview-2024-12-17", // ✅ Modèle OpenAI
-            role: "system", content: "Tu es un expert en Ressources Humaines en Belgique. Utilise un ton formel et donne des conseils RH précis et factuels.",
-            role: "user", content: userMessage,
-            store: true, // ✅ Enregistre la conversation (optionnel)
-
+            model: "gpt-4o-2024-08-06",
+            messages: [
+                { role: "system", content: "Tu es un expert en Ressources Humaines en Belgique. Utilise un ton formel et donne des conseils RH précis et factuels." },
+                { role: "user", content: userMessage }
+            ]
         });
 
-        console.log("🔹 Réponse API OpenAI :", JSON.stringify(response, null, 2));
+        console.log("🔹 Réponse API OpenAI :", JSON.stringify(completion, null, 2));
 
-        if (response.choices?.length > 0) {
-            res.json({ response: response.choices[0].message.content });
+        if (completion.choices?.length > 0) {
+            res.json({ response: completion.choices[0].message.content });
         } else {
             console.error("❌ Aucune réponse valide de OpenAI !");
             res.status(500).json({ error: "Erreur : aucune réponse reçue de l'IA." });
