@@ -19,15 +19,11 @@ const RH_SCHEMA = {
   "properties": {
     "conseil": {
       "type": "string",
-      "description": "Recommandation ou conseil spécifique en matière de ressources humaines."
+      "description": "Recommandation ou conseil spécifique en matière de ressources humaines belge."
     },
     "exemple_loi": {
       "type": "string",
       "description": "Exemple de texte de loi applicable en matière de ressources humaines en Belgique."
-    },
-    "article_moniteur": {
-      "type": "string",
-      "description": "Citer un article du Moniteur belge pertinent pour le conseil donné."
     },
     "situation_cible": {
       "type": "string",
@@ -37,7 +33,6 @@ const RH_SCHEMA = {
   "required": [
     "conseil",
     "exemple_loi",
-    "article_moniteur",
     "situation_cible"
   ],
   "additionalProperties": false
