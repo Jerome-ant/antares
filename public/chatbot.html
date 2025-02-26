@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -16,6 +16,8 @@
             --bot-msg-bg: #f5f5f5;
             --shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
             --border-radius: 12px;
+            --section-bg: #f9f9f9;
+            --section-border: #ddd;
         }
         
         * {
@@ -145,6 +147,38 @@
         
         .message-content {
             word-wrap: break-word;
+        }
+        
+        /* Style pour les sections de réponse structurée */
+        .structured-response {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .response-section {
+            background-color: var(--section-bg);
+            border: 1px solid var(--section-border);
+            border-radius: 8px;
+            padding: 10px;
+        }
+        
+        .section-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 5px;
+            font-size: 14px;
+        }
+        
+        .section-content {
+            font-size: 14px;
         }
         
         .loading {
@@ -314,13 +348,13 @@
         
         <div class="chat-container">
             <div class="chat-messages" id="chat-messages">
-                <div class="message bot-message">
+                <div class="message bot-message" id="welcome-message">
                     <div class="message-header">
                         <i class="fas fa-robot message-icon"></i>
                         <span>Assistant RH</span>
                     </div>
                     <div class="message-content">
-                        Bonjour ! Je suis votre assistant RH virtuel. Comment puis-je vous aider aujourd'hui ?
+                        <!-- Sera remplacé par un message aléatoire -->
                     </div>
                     <div class="timestamp">Aujourd'hui, à <span id="current-time"></span></div>
                 </div>
@@ -338,10 +372,10 @@
             <button class="feature-button" id="clear-chat">
                 <i class="fas fa-trash"></i> Effacer
             </button>
-            <button class="feature-button">
+            <button class="feature-button" id="help-button">
                 <i class="fas fa-question-circle"></i> Aide
             </button>
-            <button class="feature-button">
+            <button class="feature-button" id="examples-button">
                 <i class="fas fa-lightbulb"></i> Exemples
             </button>
         </div>
@@ -349,11 +383,47 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const BACKEND_URL = "https://www.antares.work";
+            // Fonction pour générer un message d'accueil aléatoire
+            function getRandomGreeting() {
+                const greetings = [
+                    "Salut ! Comment va ta journée de travail aujourd'hui ? Je suis là pour t'aider avec tes questions RH ! 😊",
+                    "Hello ! Besoin d'un coup de pouce RH ? Je suis là pour ça ! 💪",
+                    "Coucou ! Envie de parler carrière, droits ou bien-être au travail ? Je t'écoute ! 🌟",
+                    "Hey ! Comment se passe ta semaine ? Prêt(e) à parler RH dans une ambiance détendue ? 🎯",
+                    "Bonjour ! Un sourire aux lèvres pour commencer ? Je suis ton assistant RH perso ! 😄",
+                    "Hello ! Tu as des questions sur ton environnement pro ? C'est le moment de les poser ! ✨",
+                    "Salut ! Quelle est ton humeur au bureau aujourd'hui ? Je suis là pour éclaircir tes doutes RH ! 🌈",
+                    "Coucou ! Une nouvelle journée, de nouvelles opportunités ! En quoi puis-je t'aider ? 🚀",
+                    "Hey ! Prêt(e) à booster ta vie pro ? Pose-moi tes questions RH ! 💡",
+                    "Salut ! Aujourd'hui on débloque ensemble tes problématiques RH, ça te dit ? 🔓",
+                    "Hello ! Ton bien-être au travail est ma priorité ! Qu'est-ce qui te préoccupe ? 🌻",
+                    "Coucou ! Ensemble, on trouve des solutions à tes questions RH ! Ça commence maintenant ! 🌟",
+                    "Hey ! Comment puis-je rendre ta journée de travail plus agréable ? 🌤️",
+                    "Bonjour ! Un café ☕ virtuel et on discute de tes préoccupations RH ?",
+                    "Salut ! Quels sont tes défis pro du moment ? Je suis là pour t'épauler ! 🤝",
+                    "Hello ! Prêt(e) à simplifier ton quotidien pro ? Je t'écoute ! 📝",
+                    "Coucou ! Le travail c'est mieux quand on connaît ses droits ! Je t'aide à y voir plus clair ! 🔎",
+                    "Hey ! Nouvelle journée, nouvelle énergie ! En quoi puis-je t'être utile aujourd'hui ? ⚡",
+                    "Salut ! Transformons tes questions RH en solutions concrètes ! 🌈",
+                    "Hello ! Tu mérites un environnement de travail au top ! Comment puis-je t'aider à l'améliorer ? 🏆"
+                ];
+                
+                return greetings[Math.floor(Math.random() * greetings.length)];
+            }
+            
+            // Remplacer le message statique par un message aléatoire
+            const welcomeMessageContent = document.querySelector('#welcome-message .message-content');
+            if (welcomeMessageContent) {
+                welcomeMessageContent.textContent = getRandomGreeting();
+            }
+            
+            const BACKEND_URL = "http://localhost:3000"; // Changez pour votre environnement
             const inputField = document.getElementById("user-input");
             const chatMessages = document.getElementById("chat-messages");
             const sendButton = document.getElementById("send-button");
             const clearChatButton = document.getElementById("clear-chat");
+            const helpButton = document.getElementById("help-button");
+            const examplesButton = document.getElementById("examples-button");
             
             // Afficher l'heure actuelle
             const currentTimeElement = document.getElementById("current-time");
@@ -387,42 +457,166 @@
                 return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             }
             
-            // Fonction pour créer un message
-            function createMessage(content, isUser = false) {
+            // Fonction pour créer un message utilisateur
+            function createUserMessage(content) {
                 const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+                messageDiv.className = 'message user-message';
                 
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'message-header';
                 
-                const icon = document.createElement('i');
-                icon.className = `fas ${isUser ? 'fa-user' : 'fa-robot'} message-icon`;
-                
                 const sender = document.createElement('span');
-                sender.textContent = isUser ? 'Vous' : 'Assistant RH';
+                sender.textContent = 'Vous';
+                
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-user message-icon';
                 
                 const contentDiv = document.createElement('div');
                 contentDiv.className = 'message-content';
-                
-                // Si le message vient du bot, on formate les potentiels liens
-                if (!isUser) {
-                    contentDiv.innerHTML = formatLinks(escapeHTML(content));
-                } else {
-                    contentDiv.textContent = content;
-                }
+                contentDiv.textContent = content;
                 
                 const timestampDiv = document.createElement('div');
                 timestampDiv.className = 'timestamp';
                 timestampDiv.textContent = `Aujourd'hui, à ${getCurrentTime()}`;
                 
-                // Construction du message selon l'expéditeur
-                if (isUser) {
-                    headerDiv.appendChild(sender);
-                    headerDiv.appendChild(icon);
-                } else {
-                    headerDiv.appendChild(icon);
-                    headerDiv.appendChild(sender);
-                }
+                headerDiv.appendChild(sender);
+                headerDiv.appendChild(icon);
+                
+                messageDiv.appendChild(headerDiv);
+                messageDiv.appendChild(contentDiv);
+                messageDiv.appendChild(timestampDiv);
+                
+                return messageDiv;
+            }
+            
+            // Fonction pour créer un message bot structuré
+            function createStructuredBotMessage(responseObject) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message bot-message';
+                
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'message-header';
+                
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-robot message-icon';
+                
+                const sender = document.createElement('span');
+                sender.textContent = 'Assistant RH';
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                
+                // Conteneur pour la réponse structurée
+                const structuredDiv = document.createElement('div');
+                structuredDiv.className = 'structured-response';
+                
+                // Section Conseil
+                const conseilSection = document.createElement('div');
+                conseilSection.className = 'response-section';
+                
+                const conseilTitle = document.createElement('div');
+                conseilTitle.className = 'section-title';
+                conseilTitle.innerHTML = '<i class="fas fa-lightbulb"></i> Conseil';
+                
+                const conseilContent = document.createElement('div');
+                conseilContent.className = 'section-content';
+                conseilContent.innerHTML = formatLinks(escapeHTML(responseObject.conseil));
+                
+                conseilSection.appendChild(conseilTitle);
+                conseilSection.appendChild(conseilContent);
+                
+                // Section Exemple de loi
+                const loiSection = document.createElement('div');
+                loiSection.className = 'response-section';
+                
+                const loiTitle = document.createElement('div');
+                loiTitle.className = 'section-title';
+                loiTitle.innerHTML = '<i class="fas fa-balance-scale"></i> Législation applicable';
+                
+                const loiContent = document.createElement('div');
+                loiContent.className = 'section-content';
+                loiContent.innerHTML = formatLinks(escapeHTML(responseObject.exemple_loi));
+                
+                loiSection.appendChild(loiTitle);
+                loiSection.appendChild(loiContent);
+                
+                // Section Article du moniteur
+                const articleSection = document.createElement('div');
+                articleSection.className = 'response-section';
+                
+                const articleTitle = document.createElement('div');
+                articleTitle.className = 'section-title';
+                articleTitle.innerHTML = '<i class="fas fa-file-alt"></i> Référence Moniteur belge';
+                
+                const articleContent = document.createElement('div');
+                articleContent.className = 'section-content';
+                articleContent.innerHTML = formatLinks(escapeHTML(responseObject.article_moniteur));
+                
+                articleSection.appendChild(articleTitle);
+                articleSection.appendChild(articleContent);
+                
+                // Section Situation cible
+                const situationSection = document.createElement('div');
+                situationSection.className = 'response-section';
+                
+                const situationTitle = document.createElement('div');
+                situationTitle.className = 'section-title';
+                situationTitle.innerHTML = '<i class="fas fa-user-check"></i> Situation concernée';
+                
+                const situationContent = document.createElement('div');
+                situationContent.className = 'section-content';
+                situationContent.innerHTML = formatLinks(escapeHTML(responseObject.situation_cible));
+                
+                situationSection.appendChild(situationTitle);
+                situationSection.appendChild(situationContent);
+                
+                // Ajouter toutes les sections au conteneur
+                structuredDiv.appendChild(conseilSection);
+                structuredDiv.appendChild(loiSection);
+                structuredDiv.appendChild(articleSection);
+                structuredDiv.appendChild(situationSection);
+                
+                // Ajouter le conteneur structuré au message
+                contentDiv.appendChild(structuredDiv);
+                
+                const timestampDiv = document.createElement('div');
+                timestampDiv.className = 'timestamp';
+                timestampDiv.textContent = `Aujourd'hui, à ${getCurrentTime()}`;
+                
+                headerDiv.appendChild(icon);
+                headerDiv.appendChild(sender);
+                
+                messageDiv.appendChild(headerDiv);
+                messageDiv.appendChild(contentDiv);
+                messageDiv.appendChild(timestampDiv);
+                
+                return messageDiv;
+            }
+            
+            // Fonction pour créer un message bot simple (pour les messages de bienvenue et erreurs)
+            function createSimpleBotMessage(content) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message bot-message';
+                
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'message-header';
+                
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-robot message-icon';
+                
+                const sender = document.createElement('span');
+                sender.textContent = 'Assistant RH';
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                contentDiv.innerHTML = formatLinks(escapeHTML(content));
+                
+                const timestampDiv = document.createElement('div');
+                timestampDiv.className = 'timestamp';
+                timestampDiv.textContent = `Aujourd'hui, à ${getCurrentTime()}`;
+                
+                headerDiv.appendChild(icon);
+                headerDiv.appendChild(sender);
                 
                 messageDiv.appendChild(headerDiv);
                 messageDiv.appendChild(contentDiv);
@@ -467,7 +661,7 @@
                 sendButton.disabled = true;
                 
                 // Afficher le message de l'utilisateur
-                const userMessageElement = createMessage(message, true);
+                const userMessageElement = createUserMessage(message);
                 chatMessages.appendChild(userMessageElement);
                 
                 // Afficher l'indicateur de chargement
@@ -511,8 +705,19 @@
                     chatMessages.removeChild(loadingIndicator);
                     
                     if (data.response) {
-                        // Afficher la réponse du bot
-                        const botMessageElement = createMessage(data.response);
+                        let botMessageElement;
+                        
+                        // Vérifier si la réponse est un objet structuré
+                        if (typeof data.response === 'object' && data.response.conseil) {
+                            // Créer un message structuré
+                            botMessageElement = createStructuredBotMessage(data.response);
+                        } else {
+                            // Créer un message simple (pour la compatibilité avec l'ancien format)
+                            botMessageElement = createSimpleBotMessage(
+                                typeof data.response === 'string' ? data.response : JSON.stringify(data.response)
+                            );
+                        }
+                        
                         chatMessages.appendChild(botMessageElement);
                     } else {
                         throw new Error("Aucune réponse valide");
@@ -526,7 +731,7 @@
                     }
                     
                     // Afficher un message d'erreur
-                    const errorMessage = createMessage("Désolé, une erreur est survenue lors de la communication avec le serveur. Veuillez réessayer plus tard.");
+                    const errorMessage = createSimpleBotMessage("Désolé, une erreur est survenue lors de la communication avec le serveur. Veuillez réessayer plus tard.");
                     chatMessages.appendChild(errorMessage);
                 } finally {
                     // Réactiver l'input et le bouton
@@ -554,25 +759,63 @@
                 // Garder uniquement le message de bienvenue
                 const welcomeMessage = chatMessages.firstElementChild;
                 chatMessages.innerHTML = '';
-                chatMessages.appendChild(welcomeMessage);
+                
+                // Créer un nouveau message de bienvenue avec un texte différent
+                const newWelcomeMessage = welcomeMessage.cloneNode(true);
+                const welcomeContent = newWelcomeMessage.querySelector('.message-content');
+                welcomeContent.textContent = getRandomGreeting();
+                
+                // Mettre à jour l'horodatage
+                const timestampElement = newWelcomeMessage.querySelector('.timestamp');
+                timestampElement.textContent = `Aujourd'hui, à ${getCurrentTime()}`;
+                
+                chatMessages.appendChild(newWelcomeMessage);
             });
             
-            // Mettre le focus sur l'input au chargement
-            inputField.focus();
+            // Gérer le clic sur le bouton d'aide
+            helpButton.addEventListener('click', function() {
+                const helpMessage = createSimpleBotMessage(
+                    "Voici comment utiliser ce chatbot :<br><br>" + 
+                    "1. Posez une question concernant le droit du travail ou la gestion RH en Belgique<br>" +
+                    "2. Attendez ma réponse structurée avec conseil, législation, référence et contexte<br>" +
+                    "3. Pour recommencer, cliquez sur le bouton \"Effacer\"<br><br>" +
+                    "N'hésitez pas à être précis dans vos questions pour obtenir les meilleures réponses !"
+                );
+                chatMessages.appendChild(helpMessage);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
             
-            // Limiter la vitesse des requêtes
-            let lastMessageTime = 0;
-            const RATE_LIMIT_MS = 1000; // 1 seconde entre les messages
-            
-            const originalSendMessage = sendMessage;
-            sendMessage = function() {
+            // Gérer le clic sur le bouton d'exemple
+            examplesButton.addEventListener('click', function() {
+                const examplesMessage = createSimpleBotMessage(
+                    "Voici quelques exemples de questions que vous pouvez me poser :<br><br>" +
+                    "• Quelles sont les règles pour le congé parental en Belgique ?<br>" +
+                    "• Comment calculer les indemnités de préavis ?<br>" +
+                    "• Quels sont les droits d'un travailleur à temps partiel ?<br>" +
+                    "• Comment gérer le burn-out d'un employé ?<br>" +
+                    "• Quelles sont les obligations légales pour les heures supplémentaires ?<br>" +
+                    "• Comment mettre en place un plan de formation ?"
+                );
+                chatMessages.appendChild(examplesMessage);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+
+                // Mettre le focus sur l'input au chargement
+                inputField.focus();
+
+                // Limiter la vitesse des requêtes
+                let lastMessageTime = 0;
+                const RATE_LIMIT_MS = 1000; // 1 seconde entre les messages
+
+                const originalSendMessage = sendMessage;
+                sendMessage = function() {
                 const now = Date.now();
-                if (now - lastMessageTime < RATE_LIMIT_MS) {
-                    return;
-                }
+            if (now - lastMessageTime < RATE_LIMIT_MS) {
+                return;
+            }
                 lastMessageTime = now;
                 originalSendMessage();
-            };
+};
         });
     </script>
 
