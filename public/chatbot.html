@@ -417,7 +417,7 @@
                 welcomeMessageContent.textContent = getRandomGreeting();
             }
             
-            const BACKEND_URL = "http://www.antares.work:3000";
+            const BACKEND_URL = "https://www.antares.work:3000";
             const inputField = document.getElementById("user-input");
             const chatMessages = document.getElementById("chat-messages");
             const sendButton = document.getElementById("send-button");
@@ -775,10 +775,10 @@
             // Gérer le clic sur le bouton d'aide
             helpButton.addEventListener('click', function() {
                 const helpMessage = createSimpleBotMessage(
-                    "Voici comment utiliser ce chatbot :<br><br>" + 
-                    "1. Posez une question concernant le droit du travail ou la gestion RH en Belgique<br>" +
-                    "2. Attendez ma réponse structurée avec conseil, législation, référence et contexte<br>" +
-                    "3. Pour recommencer, cliquez sur le bouton \"Effacer\"<br><br>" +
+                    "Voici comment utiliser ce chatbot" + 
+                    "1. Posez une question concernant le droit du travail ou la gestion RH en Belgique" +
+                    "2. Attendez ma réponse structurée avec conseil, législation, référence et contexte" +
+                    "3. Pour recommencer, cliquez sur le bouton \"Effacer\"" +
                     "N'hésitez pas à être précis dans vos questions pour obtenir les meilleures réponses !"
                 );
                 chatMessages.appendChild(helpMessage);
@@ -788,12 +788,12 @@
              // Gérer le clic sur le bouton d'exemple
              examplesButton.addEventListener('click', function() {
                 const examplesMessage = createSimpleBotMessage(
-                    "Voici quelques exemples de questions que vous pouvez me poser :<br><br>" +
-                    "• Quelles sont les règles pour le congé parental en Belgique ?<br>" +
-                    "• Comment calculer les indemnités de préavis ?<br>" +
-                    "• Quels sont les droits d'un travailleur à temps partiel ?<br>" +
-                    "• Comment gérer le burn-out d'un employé ?<br>" +
-                    "• Quelles sont les obligations légales pour les heures supplémentaires ?<br>" +
+                    "Voici quelques exemples de questions que vous pouvez me poser" +
+                    "• Quelles sont les règles pour le congé parental en Belgique ?" +
+                    "• Comment calculer les indemnités de préavis ?" +
+                    "• Quels sont les droits d'un travailleur à temps partiel ?" +
+                    "• Comment gérer le burn-out d'un employé ?" +
+                    "• Quelles sont les obligations légales pour les heures supplémentaires ?" +
                     "• Comment mettre en place un plan de formation ?"
                 );
                 chatMessages.appendChild(examplesMessage);
