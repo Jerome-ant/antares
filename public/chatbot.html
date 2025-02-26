@@ -390,7 +390,7 @@
                     "Hello ! Besoin d'un coup de pouce RH ? Je suis là pour ça ! 💪",
                     "Coucou ! Envie de parler carrière, droits ou bien-être au travail ? Je t'écoute ! 🌟",
                     "Hey ! Comment se passe ta semaine ? Prêt(e) à parler RH dans une ambiance détendue ? 🎯",
-                    "Bonjour ! Un sourire aux lèvres pour commencer ? Je suis ton assistant RH perso ! 😄",
+                    "Bonjour ! Un sourire pour commencer ? Je suis ton assistant RH perso ! 😄",
                     "Hello ! Tu as des questions sur ton environnement pro ? C'est le moment de les poser ! ✨",
                     "Salut ! Quelle est ton humeur au bureau aujourd'hui ? Je suis là pour éclaircir tes doutes RH ! 🌈",
                     "Coucou ! Une nouvelle journée, de nouvelles opportunités ! En quoi puis-je t'aider ? 🚀",
@@ -417,7 +417,7 @@
                 welcomeMessageContent.textContent = getRandomGreeting();
             }
             
-            const BACKEND_URL = "http://localhost:3000"; // Changez pour votre environnement
+            const BACKEND_URL = "http://www.antares.work:3000";
             const inputField = document.getElementById("user-input");
             const chatMessages = document.getElementById("chat-messages");
             const sendButton = document.getElementById("send-button");
@@ -785,8 +785,8 @@
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             });
             
-            // Gérer le clic sur le bouton d'exemple
-            examplesButton.addEventListener('click', function() {
+             // Gérer le clic sur le bouton d'exemple
+             examplesButton.addEventListener('click', function() {
                 const examplesMessage = createSimpleBotMessage(
                     "Voici quelques exemples de questions que vous pouvez me poser :<br><br>" +
                     "• Quelles sont les règles pour le congé parental en Belgique ?<br>" +
@@ -799,25 +799,24 @@
                 chatMessages.appendChild(examplesMessage);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             });
-
-                // Mettre le focus sur l'input au chargement
-                inputField.focus();
-
-                // Limiter la vitesse des requêtes
-                let lastMessageTime = 0;
-                const RATE_LIMIT_MS = 1000; // 1 seconde entre les messages
-
-                const originalSendMessage = sendMessage;
-                sendMessage = function() {
+            
+            // Mettre le focus sur l'input au chargement
+            inputField.focus();
+            
+            // Limiter la vitesse des requêtes
+            let lastMessageTime = 0;
+            const RATE_LIMIT_MS = 1000; // 1 seconde entre les messages
+            
+            const originalSendMessage = sendMessage;
+            sendMessage = function() {
                 const now = Date.now();
-            if (now - lastMessageTime < RATE_LIMIT_MS) {
-                return;
-            }
+                if (now - lastMessageTime < RATE_LIMIT_MS) {
+                    return;
+                }
                 lastMessageTime = now;
                 originalSendMessage();
-};
+            };
         });
     </script>
-
 </body>
 </html>
