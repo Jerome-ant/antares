@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuration OpenAI très simple
+// Configuration OpenAI
 const openai = new OpenAI({ 
   apiKey: process.env.OPENAI_API_KEY 
 });
@@ -19,40 +19,59 @@ const openai = new OpenAI({
 // CORS permissif
 app.use(cors({
   origin: '*',
-  methods: ['GET', 'POST'],
-  credentials: true
+  methods: ['GET', 'POST']
 }));
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Route test simple
+// Route de test
 app.get("/", (req, res) => {
-  res.send("Serveur opérationnel");
+  res.send("🚀 Serveur opérationnel avec OpenAI !");
 });
 
-// Route echo simple pour tester si le serveur reçoit bien les requêtes
+// Route API pour tester la connexion serveur
 app.post("/api/echo", (req, res) => {
-  console.log("Echo requis:", req.body);
+  console.log("🔄 Echo requis:", req.body);
   res.json({ echo: req.body });
 });
 
-// Route API extrêmement simplifiée
+// 📌 Route principale pour interagir avec OpenAI
 app.post("/api/chat", async (req, res) => {
-  console.log("Requête reçue:", req.body);
+  console.log("📩 Requête reçue:", req.body);
   
+  const userMessage = req.body.message;
+  
+  // Vérification de la clé API
+  if (!process.env.OPENAI_API_KEY) {
+    console.error("❌ Clé API OpenAI manquante !");
+    return res.status(500).json({ error: "Clé API manquante dans .env" });
+  }
+
   try {
-    // Réponse statique pour tester si le client reçoit bien les réponses du serveur
-    res.json({ 
-      response: "Ceci est une réponse statique pour tester la connexion. Si vous voyez ce message, le problème n'est pas dans la communication entre votre frontend et le backend, mais plutôt avec l'API OpenAI."
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-2024-08-06", // ✅ Dernière version du modèle
+      messages: [
+        { role: "system", content: "Tu es un expert en RH en Belgique. Utilise un ton formel et donne des conseils précis et factuels." },
+        { role: "user", content: userMessage }
+      ]
     });
+
+    console.log("🔹 Réponse API OpenAI:", JSON.stringify(completion, null, 2));
+
+    if (completion.choices?.length > 0) {
+      res.json({ response: completion.choices[0].message.content });
+    } else {
+      console.error("❌ Aucune réponse valide reçue d'OpenAI !");
+      res.status(500).json({ error: "Erreur : aucune réponse reçue de l'IA." });
+    }
   } catch (error) {
-    console.error("Erreur:", error);
-    res.status(500).json({ error: "Erreur serveur" });
+    console.error("❌ Erreur API OpenAI :", error);
+    res.status(500).json({ error: "Erreur lors de l'appel à OpenAI." });
   }
 });
 
 // Démarrage serveur
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Serveur lancé sur port ${PORT}`);
+  console.log(`🚀 Serveur lancé sur port ${PORT}`);
 });
