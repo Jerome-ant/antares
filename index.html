@@ -3,43 +3,1253 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot RH Belge</title>
+    <meta name="description" content="Antares.work - Votre assistant RH virtuel spécialisé en droit du travail belge. Obtenez des réponses précises et des conseils personnalisés en quelques secondes.">
+    <title>Antares.work | Votre Expert RH Belge</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        #chatbox { width: 80%; max-width: 600px; margin: auto; padding: 10px; border: 1px solid #ddd; height: 400px; overflow-y: auto; }
-        #userInput { width: 70%; padding: 10px; }
-        #sendBtn { padding: 10px; cursor: pointer; }
-    </style>
-    <script>
-        async function sendMessage() {
-            let userMessage = document.getElementById("userInput").value;
-            document.getElementById("userInput").value = "";
-            document.getElementById("chatbox").innerHTML += `<p><b>Vous :</b> ${userMessage}</p>`;
-            
-            let response = await fetch("https://api.openai.com/v1/chat/completions", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer"
-                },
-                body: JSON.stringify({
-                    model: "gpt-4-turbo",
-                    messages: [
-                        { role: "system", content: "Tu es un expert RH belge en droit du travail et recrutement industriel. Réponds avec des détails précis et références juridiques belges." },
-                        { role: "user", content: userMessage }
-                    ]
-                })
-            });
-            
-            let result = await response.json();
-            document.getElementById("chatbox").innerHTML += `<p><b>IA :</b> ${result.choices[0].message.content}</p>`;
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #f39c12;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --text-color: #333;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
         }
-    </script>
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: #f9f9f9;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+        
+        .logo span {
+            color: var(--primary-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary-color);
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            bottom: -5px;
+            left: 0;
+            transition: var(--transition);
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding-top: 120px;
+            padding-bottom: 80px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            text-align: center;
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            color: #555;
+        }
+        
+        .hero-btns {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--light-color);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background-color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h3 {
+            font-size: 2rem;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+        }
+        
+        .section-title p {
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            text-align: center;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            background-color: var(--light-color);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        
+        .feature-icon i {
+            font-size: 30px;
+            color: var(--primary-color);
+        }
+        
+        .feature-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+        
+        .feature-card p {
+            color: #666;
+        }
+        
+        /* How It Works Section */
+        .how-it-works {
+            padding: 80px 0;
+            background-color: var(--light-color);
+        }
+        
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            position: relative;
+        }
+        
+        .steps::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            z-index: 1;
+        }
+        
+        .step {
+            text-align: center;
+            width: 25%;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 0 0 10px white;
+            position: relative;
+        }
+        
+        .step h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+        
+        .step p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        /* Testimonial Section */
+        .testimonials {
+            padding: 80px 0;
+            background-color: white;
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .testimonial-card {
+            background-color: var(--light-color);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .testimonial-text::before {
+            content: '\201C';
+            font-size: 4rem;
+            position: absolute;
+            top: -20px;
+            left: -10px;
+            color: rgba(41, 128, 185, 0.1);
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .author-img i {
+            font-size: 25px;
+            color: #aaa;
+        }
+        
+        .author-info h5 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .author-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* CTA Section */
+        .cta {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .cta h3 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .cta p {
+            max-width: 700px;
+            margin: 0 auto 30px;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .cta .btn {
+            background-color: white;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            padding: 12px 30px;
+        }
+        
+        .cta .btn:hover {
+            background-color: var(--light-color);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .footer-logo span {
+            color: var(--primary-color);
+        }
+        
+        .footer-description {
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .footer-social a {
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        
+        .footer-social a:hover {
+            color: var(--primary-color);
+        }
+        
+        .footer-links h4, .footer-contact h4 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-links h4::after, .footer-contact h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: white;
+            opacity: 0.8;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--primary-color);
+            padding-left: 5px;
+        }
+        
+        .footer-contact p {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+        
+        .footer-contact i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        #cookie-settings-button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin: 0 auto 20px;
+            display: block;
+        }
+        
+        /* Styles pour le dialogue des cookies */
+        dialog::backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        dialog:not([open]) {
+            display: none;
+        }
+
+        dialog {
+            max-width: 500px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        dialog h3 {
+            margin-bottom: 15px;
+        }
+
+        dialog p {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        dialog button {
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: all 0.2s ease;
+        }
+
+        dialog button:hover {
+            opacity: 0.9;
+        }
+
+        .cookie-options {
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .cookie-option {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cookie-option:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .cookie-option input {
+            margin-top: 5px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .cookie-option label {
+            cursor: pointer;
+        }
+
+        .cookie-policy-link {
+            font-size: 0.85rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .cookie-policy-link a {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        .cookie-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        #accept-all-cookies {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        #accept-selected-cookies {
+            background-color: var(--light-color);
+            border: 1px solid #ddd;
+        }
+        
+        #reject-cookies {
+            background-color: white;
+            border: 1px solid #ddd;
+        }
+        
+        /* Animation des éléments */
+        .feature-card, .step, .testimonial-card {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .animate {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+        
+        /* Responsive Design */
+        @media screen and (max-width: 992px) {
+            .steps {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .steps::before {
+                display: none;
+            }
+            
+            .step {
+                width: 100%;
+                max-width: 400px;
+                margin-bottom: 40px;
+            }
+        }
+        
+        @media screen and (max-width: 768px) {
+            nav {
+                position: fixed;
+                top: 0;
+                right: -300px;
+                width: 300px;
+                height: 100vh;
+                background-color: white;
+                box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+                transition: 0.3s;
+                padding: 80px 20px 20px;
+                z-index: 999;
+            }
+            
+            nav.active {
+                right: 0;
+            }
+            
+            nav ul {
+                flex-direction: column;
+            }
+            
+            nav ul li {
+                margin: 15px 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                z-index: 1000;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .hero-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta h3 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .nav-container {
+                padding: 15px 0;
+            }
+            
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .logo img {
+                height: 30px;
+            }
+            
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .section-title h3 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h2>Chatbot RH Belge</h2>
-    <div id="chatbox"></div>
-    <input type="text" id="userInput" placeholder="Posez votre question RH">
-    <button id="sendBtn" onclick="sendMessage()">Envoyer</button>
-</body>
-</html>
+    <dialog id="cookie-consent-dialog">
+        <h3>Ce site utilise des cookies</h3>
+        <p>
+            Antares.work utilise des cookies et des technologies similaires pour vous garantir la meilleure expérience sur notre site. Conformément au Règlement Général sur la Protection des Données (RGPD), nous vous demandons votre consentement avant d'utiliser certains cookies.
+        </p>
+        <div class="cookie-options">
+            <div class="cookie-option">
+                <input id="cookies-necessary" name="cookies-necessary" type="checkbox" checked disabled>
+                <div>
+                    <label for="cookies-necessary"><strong>Cookies nécessaires</strong></label>
+                    <p>Ces cookies sont indispensables au fonctionnement du site et ne peuvent pas être désactivés. Ils ne stockent aucune information personnelle identifiable.</p>
+                </div>
+            </div>
+            <div class="cookie-option">
+                <input id="cookies-analytics" name="cookies-analytics" type="checkbox">
+                <div>
+                    <label for="cookies-analytics"><strong>Cookies statistiques</strong></label>
+                    <p>Ces cookies nous permettent d'analyser anonymement l'utilisation du site afin d'en améliorer les performances et l'expérience utilisateur. Les données sont collectées de manière agrégée et ne permettent pas de vous identifier personnellement.</p>
+                </div>
+            </div>
+            <div class="cookie-option">
+                <input id="cookies-marketing" name="cookies-marketing" type="checkbox">
+                <div>
+                    <label for="cookies-marketing"><strong>Cookies marketing</strong></label>
+                    <p>Ces cookies sont utilisés pour suivre les visiteurs sur les sites web. Ils sont conçus pour afficher des publicités pertinentes et engageantes pour l'utilisateur.</p>
+                </div>
+            </div>
+        </div>
+        <p class="cookie-policy-link">
+            Pour plus d'informations sur notre utilisation des cookies, veuillez consulter notre <a href="#">Politique de confidentialité</a>.
+        </p>
+        <div class="cookie-buttons">
+            <button id="reject-cookies">Tout refuser</button>
+            <button id="accept-selected-cookies">Accepter la sélection</button>
+            <button id="accept-all-cookies" class="btn">Tout accepter</button>
+        </div>
+    </dialog>
+
+    <!-- Header -->
+    <header>
+        <div class="container nav-container">
+            <div class="logo">
+                <h1>Antares.<span>work</span></h1>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav id="nav">
+                <ul>
+                    <li><a href="#features">Fonctionnalités</a></li>
+                    <li><a href="#how-it-works">Comment ça marche</a></li>
+                    <li><a href="#testimonials">Témoignages</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            
+            <a href="/chatbot.html" class="btn">Accéder au chatbot</a>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>L'expertise RH belge à portée de clic</h2>
+            <p>Antares.work vous offre un assistant virtuel spécialisé en droit du travail et gestion RH en Belgique. Obtenez des réponses précises et des conseils personnalisés en quelques secondes.</p>
+            <div class="hero-btns">
+                <a href="/chatbot.html" class="btn">Essayer maintenant</a>
+                <a href="#how-it-works" class="btn btn-secondary">En savoir plus</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h3>Pourquoi choisir Antares.work ?</h3>
+                <p>Notre assistant RH virtuel combine expertise juridique et technologie avancée pour répondre à vos questions rapidement et avec précision.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h4>Expertise juridique belge</h4>
+                    <p>Des réponses basées sur la législation belge actuelle et les conventions collectives de travail spécifiques à votre secteur.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h4>Réponses instantanées</h4>
+                    <p>Obtenez des informations précises en quelques secondes, sans attente ni prise de rendez-vous.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h4>Confidentialité assurée</h4>
+                    <p>Vos données et conversations sont sécurisées et respectent strictement le RGPD.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h4>Disponible 24h/24, 7j/7</h4>
+                    <p>Consultez notre assistant à tout moment, même en dehors des heures de bureau.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h4>Pour employeurs et employés</h4>
+                    <p>Des conseils adaptés que vous soyez salarié, indépendant ou responsable RH.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <h4>Toujours à jour</h4>
+                    <p>Notre base de connaissances est constamment mise à jour avec les dernières évolutions législatives.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-title">
+                <h3>Comment ça fonctionne</h3>
+                <p>Obtenez des réponses à vos questions RH en quelques étapes simples</p>
+            </div>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>Posez votre question</h4>
+                    <p>Formulez votre question sur n'importe quel sujet RH ou droit du travail belge.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>Notre IA analyse</h4>
+                    <p>Notre système analyse votre demande et consulte sa base de connaissances juridiques.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>Recevez une réponse précise</h4>
+                    <p>Obtenez une réponse claire, factuelle et conforme à la législation belge.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h4>Posez des questions complémentaires</h4>
+                    <p>Affinez votre recherche avec des questions de suivi pour approfondir le sujet.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h3>Ce que disent nos utilisateurs</h3>
+                <p>Découvrez les expériences de professionnels qui utilisent Antares.work</p>
+            </div>
+            
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        <p>Antares.work m'a permis de gagner un temps précieux dans mes démarches RH. Les réponses sont claires, précises et toujours conformes à la législation belge.</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-img">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <h5>Sophie D.</h5>
+                            <p>Responsable RH, PME</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        <p>En tant qu'indépendant, je n'ai pas les moyens de consulter un avocat pour chaque question. Antares.work est devenu mon allié quotidien pour comprendre mes droits et obligations.</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-img">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <h5>Marc L.</h5>
+                            <p>Consultant indépendant</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        <p>Interface intuitive et réponses de qualité. J'apprécie particulièrement la rapidité du service et la pertinence des informations fournies.</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-img">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <h5>Julie V.</h5>
+                            <p>Directrice, Startup</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h3>Prêt à transformer votre gestion RH ?</h3>
+            <p>Rejoignez les centaines de professionnels qui font confiance à Antares.work pour leurs questions RH quotidiennes.</p>
+            <a href="/chatbot.html" class="btn">Commencer maintenant</a>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <button id="cookie-settings-button" class="mb-4">
+                Paramètres des cookies
+            </button>
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">Antares.<span>work</span></div>
+                    <p class="footer-description">Votre assistant RH virtuel spécialisé dans le droit du travail belge, disponible 24h/24 pour répondre à toutes vos questions.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Liens rapides</h4>
+                    <ul>
+                        <li><a href="#features">Fonctionnalités</a></li>
+                        <li><a href="#how-it-works">Comment ça marche</a></li>
+                        <li><a href="#testimonials">Témoignages</a></li>
+                        <li><a href="/chatbot.html">Chatbot RH</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Informations</h4>
+                    <ul>
+                        <li><a href="#">Mentions légales</a></li>
+                        <li><a href="#">Politique de confidentialité</a></li>
+                        <li><a href="#">Conditions d'utilisation</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-contact">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> contact@antares.work</p>
+                    <p><i class="fas fa-phone"></i> +32 X XXX XX XX</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Bruxelles, Belgique</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Antares.work. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Navigation mobile
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const nav = document.getElementById('nav');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            nav.classList.toggle('active');
+            mobileMenuBtn.innerHTML = nav.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+            
+            // Accessibilité - Changement de l'attribut aria-expanded
+            const isExpanded = nav.classList.contains('active');
+            mobileMenuBtn.setAttribute('aria-expanded', isExpanded);
+        });
+        
+        // Fermeture du menu lors du clic sur un lien
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                nav.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            });
+        });
+        
+        // Animation au défilement avec IntersectionObserver
+        document.addEventListener('DOMContentLoaded', () => {
+            // Observer pour les animations au scroll
+            const scrollObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            // Observer tous les éléments qui doivent être animés
+            document.querySelectorAll('.feature-card, .step, .testimonial-card').forEach(element => {
+                scrollObserver.observe(element);
+            });
+            
+            // Gestion des cookies
+            const cookieDialog = document.getElementById('cookie-consent-dialog');
+            const acceptAllBtn = document.getElementById('accept-all-cookies');
+            const acceptSelectedBtn = document.getElementById('accept-selected-cookies');
+            const rejectBtn = document.getElementById('reject-cookies');
+            const cookieSettingsBtn = document.getElementById('cookie-settings-button');
+            const analyticsCheckbox = document.getElementById('cookies-analytics');
+            
+            const marketingCheckbox = document.getElementById('cookies-marketing');
+            
+            // Configuration conforme au RGPD
+            const COOKIE_CONSENT_KEY = 'antares-cookie-consent';
+            const COOKIE_EXPIRATION_DAYS = 180; // 6 mois, conforme au RGPD
+            
+            // Vérifier si le consentement aux cookies a déjà été donné
+            const hasUserConsented = () => {
+                const consent = getCookie(COOKIE_CONSENT_KEY);
+                if (consent) {
+                    try {
+                        const preferences = JSON.parse(consent);
+                        // Vérifier si le consentement n'a pas expiré (6 mois max selon RGPD)
+                        const consentDate = new Date(preferences.timestamp);
+                        const now = new Date();
+                        const daysSinceConsent = Math.floor((now - consentDate) / (1000 * 60 * 60 * 24));
+                        return daysSinceConsent < COOKIE_EXPIRATION_DAYS;
+                    } catch (e) {
+                        return false;
+                    }
+                }
+                return false;
+            };
+            
+            // Fonction pour définir un cookie
+            const setCookie = (name, value, days) => {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                const expires = "expires=" + date.toUTCString();
+                document.cookie = name + "=" + value + ";" + expires + ";path=/;SameSite=Strict";
+            };
+            
+            // Fonction pour récupérer un cookie
+            const getCookie = (name) => {
+                const nameEQ = name + "=";
+                const ca = document.cookie.split(';');
+                for (let i = 0; i < ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+                }
+                return null;
+            };
+            
+            // Fonction pour supprimer un cookie
+            const deleteCookie = (name) => {
+                document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;SameSite=Strict';
+            };
+            
+            // Définir les préférences de cookies
+            const setCookiePreferences = (necessary, analytics, marketing) => {
+                const preferences = {
+                    necessary: necessary,
+                    analytics: analytics,
+                    marketing: marketing,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Enregistrer les préférences avec date d'expiration (6 mois)
+                const preferencesJson = JSON.stringify(preferences);
+                setCookie(COOKIE_CONSENT_KEY, preferencesJson, COOKIE_EXPIRATION_DAYS);
+                
+                // Activer/désactiver les services selon les préférences
+                if (analytics) {
+                    enableAnalytics();
+                } else {
+                    disableAnalytics();
+                }
+                
+                if (marketing) {
+                    enableMarketing();
+                } else {
+                    disableMarketing();
+                }
+                
+                // Log pour conformité RGPD (à remplacer par un vrai système de journalisation)
+                console.log(`Consentement cookies enregistré: ${new Date().toISOString()}`, preferences);
+            };
+            
+            // Fonction pour activer les scripts d'analyse
+            const enableAnalytics = () => {
+                console.log('Analytics enabled');
+                // Exemple: chargement de Google Analytics
+                // loadScript('https://www.googletagmanager.com/gtag/js?id=YOUR-GA-ID');
+            };
+            
+            // Fonction pour désactiver les scripts d'analyse
+            const disableAnalytics = () => {
+                console.log('Analytics disabled');
+                // Suppression des cookies d'analytics
+                deleteCookie('_ga');
+                deleteCookie('_gid');
+                deleteCookie('_gat');
+            };
+            
+            // Fonction pour activer les cookies marketing
+            const enableMarketing = () => {
+                console.log('Marketing cookies enabled');
+                // Chargement des scripts marketing
+            };
+            
+            // Fonction pour désactiver les cookies marketing
+            const disableMarketing = () => {
+                console.log('Marketing cookies disabled');
+                // Suppression des cookies marketing courants
+                const marketingCookies = ['_fbp', 'fr', 'IDE', 'NID', 'VISITOR_INFO1_LIVE'];
+                marketingCookies.forEach(cookieName => deleteCookie(cookieName));
+            };
+            
+            // Charger un script dynamiquement avec attribut de consentement
+            const loadScript = (src, type = 'text/javascript') => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.type = type;
+                script.setAttribute('data-consent', 'true');
+                script.async = true;
+                document.head.appendChild(script);
+                return script;
+            };
+            
+            // Afficher la boîte de dialogue si l'utilisateur n'a pas encore donné son consentement
+            if (!hasUserConsented()) {
+                cookieDialog.showModal();
+            } else {
+                // Appliquer les préférences enregistrées
+                const consent = getCookie(COOKIE_CONSENT_KEY);
+                if (consent) {
+                    const preferences = JSON.parse(consent);
+                    analyticsCheckbox.checked = preferences.analytics || false;
+                    marketingCheckbox.checked = preferences.marketing || false;
+                    
+                    if (preferences.analytics) enableAnalytics();
+                    if (preferences.marketing) enableMarketing();
+                }
+            }
+            
+            // Gestionnaires d'événements pour les boutons de cookies
+            acceptAllBtn.addEventListener('click', () => {
+                setCookiePreferences(true, true, true);
+                cookieDialog.close();
+            });
+            
+            acceptSelectedBtn.addEventListener('click', () => {
+                setCookiePreferences(
+                    true,
+                    analyticsCheckbox.checked,
+                    marketingCheckbox.checked
+                );
+                cookieDialog.close();
+            });
+            
+            rejectBtn.addEventListener('click', () => {
+                setCookiePreferences(true, false, false);
+                analyticsCheckbox.checked = false;
+                marketingCheckbox.checked = false;
+                cookieDialog.close();
+            });
+            
+            // Permettre à l'utilisateur de rouvrir la boîte de dialogue
+            cookieSettingsBtn.addEventListener('click', () => {
+                const consent = getCookie(COOKIE_CONSENT_KEY);
+                if (consent) {
+                    const preferences = JSON.parse(consent);
+                    analyticsCheckbox.checked = preferences.analytics || false;
+                    marketingCheckbox.checked = preferences.marketing || false;
+                }
+                cookieDialog.showModal();
+            });
+        });
+
+        // Smooth scrolling pour les ancres
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Préchargement des ressources
+        window.addEventListener('load', () => {
+            // Précharger la page du chatbot lorsque la page principale est complètement chargée
+            const linkPrefetch = document.createElement('link');
+            linkPrefetch.rel = 'prefetch';
+            linkPrefetch.href = '/chatbot.html';
+            document.head.appendChild(linkPrefetch);
+        });
+    </script>
